@@ -1,0 +1,236 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
+struct node {
+    int data;
+    struct node* next;
+};
+
+typedef struct node node;
+
+struct student{
+	int no;
+	char name[200];
+	int age;
+	struct student* next;
+};
+
+typedef struct student student;
+student *head;
+
+//soru 6
+
+void longest(student* head){
+	printf("\e[1;1H\e[2J");
+	student *current=head;
+	student *uzunisim=NULL;
+	int max=0;
+	while(current!=NULL){
+		int currentlength=strlen(current->name);
+		if(currentlength>max){
+			max=currentlength;
+			uzunisim=current;
+		}
+		current=current->next;
+	}
+	if(uzunisim!=NULL){
+		printf("en uzun isim:%s\n",uzunisim->name);
+		printf("uzunlugu:%d",max);
+	}
+	else{
+		printf("ogrenci bulunamadi.");
+	}
+}
+
+//soru 5
+
+void deletestudent(student *head){
+	printf("\e[1;1H\e[2J");
+	char search[50];
+	printf("Enter the student's name that you want to delete next student of it:");
+	scanf("%s",search);
+	student *current=head;
+	while(current!=NULL){
+		if(strcmp(current->name,search)==0 && current->next!=NULL){
+			student *temp=current->next;
+			current->next=temp->next;
+			free(temp);
+			return;
+		}
+		current=current->next;
+	}
+}
+//soru 4
+student *searchname(student *head){
+	printf("\e[1;1H\e[2J");
+	char search[50];
+	printf("aradiginiz ogrencinin adini giriniz: ");
+	scanf("%s",search);
+	student *current=head;
+	while(current!=NULL){
+		if(strcmp(current->name,search)==0){
+			return current;
+		}
+		current=current->next;
+	}
+}
+//soru 3
+student* studentsystem(){
+	printf("\e[1;1H\e[2J");
+	int n,k;
+	student *p;
+	printf("Kac tane ogrenci eklemek istiyorsunuz?: ");scanf("%d",&n);
+for (k = 0; k < n; k++) {
+        student* new_student = (student*)malloc(sizeof(student));
+        if (k == 0) {
+            head = new_student;
+            p = head;
+        } else {
+            p->next = new_student;
+            p = p->next;
+        }
+        printf("%d. ogrencinin adini giriniz:",k+1);
+        scanf("%s", p->name);
+        printf("&d. ogrencinin numarasini giriniz:",k+1);
+        scanf("%d", &p->no);
+        printf("%d. ogrencinin yasini giriniz:",k+1);
+        scanf("%d", &p->age);
+    }
+    p->next = NULL;
+    int cnt=1;
+	student* current=head;
+	while(current!=NULL){
+		printf("%d-%d %s %d\n",cnt,current->no,current->name,current->age);
+		current=current->next;
+		cnt++;
+	}
+	return head;
+}
+//soru 2
+
+void bigtosmall(){
+	printf("\e[1;1H\e[2J");
+	node *head=NULL;
+	srand(time(NULL));
+	int i,random;
+	for(i=0;i<=100;i++){
+		node* newnode=(node *)malloc(sizeof(node));
+		random=rand()%100+1;
+		newnode->data=random;
+		if(head==NULL || newnode->data>head->data){
+			newnode->next=head;
+			head=newnode;
+		}
+		else{
+			node *temp=head;
+			while(temp->next!=NULL && temp->next->data>newnode->data){
+				temp=temp->next;
+			}
+			newnode->next=temp->next;
+			temp->next=newnode;
+		}
+	}
+	node* temp = head;
+    while (temp != NULL) {
+        printf("%d\n", temp->data);
+        temp = temp->next;
+    }
+}
+//soru 1
+node* createlist() {
+	printf("\e[1;1H\e[2J");
+    int num;
+    node* head=NULL;
+    node* tail=NULL;
+
+    printf("Klavyeden -1 girilinceye kadar, girilen tüm tek sayıları listenin başına, çift sayıları ise listenin sonuna ekleyen fonksiyonu yazınız.");
+    while (1) {
+        scanf("%d", &num);
+        if (num==-1) {
+       	node* current=head;
+       	printf("List\n");
+    			while (current!=NULL) {
+        			printf("%d\t",current->data);
+        			current=current->next;
+    } 
+            break;
+        }
+
+        node* newnode=(node*)malloc(sizeof(node));
+        newnode->data=num;
+        newnode->next=NULL;
+
+        if (num%2==1) {
+            if (head==NULL) {
+                head=newnode;
+                tail=newnode;
+            } else {
+                newnode->next=head;
+                head=newnode;
+            }
+        } else {
+            if (head==NULL) {
+                head=newnode;
+                tail=newnode;
+            } else {
+                tail->next =newnode;
+                tail=newnode;
+            }
+        }
+    }
+
+    return head;
+}
+
+int main() {
+	student* head;
+	int choice;
+	while(1){
+		printf("\n1-Birinci soru\n2-ikinci soru\n3-ucuncu soru\n4-Dorduncu soru \n5-Besinci soru \n6-altıncı soru \n7-cikis\nseciminizi giriniz:");
+		scanf("%d",&choice);
+		switch(choice){
+			case 1:{
+			 node* list = createlist();
+    				while (list != NULL) {
+        			struct node* temp = list;
+        			list = list->next;
+        			free(temp);
+    }
+    break;
+		}
+			case 2:{
+				bigtosmall();
+				break;
+			}
+			case 3:{
+				head=studentsystem();
+				break;
+			}
+			case 4:{
+				student* found=searchname(head);
+				if(found!=NULL){
+					printf("ogrenci bulundu.\n%d %s %d",found->no,found->name,found->age);
+				}
+				else{
+					printf("ogrenci bulunamadi.");
+				}
+				break;
+			}
+			case 5:{
+				deletestudent(head);
+				break;
+			}
+			case 6:{
+				longest(head);
+				break;
+			}
+			case 7:{
+				exit(0);
+				break;
+			}
+	}             
+
+    }		
+}
